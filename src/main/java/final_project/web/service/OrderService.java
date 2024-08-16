@@ -25,11 +25,16 @@ public class OrderService {
     private static final String TOPIC = "order-topic";
 
     public Order createOrder(Order order) {
-        order.setOrderDate(Instant.from(LocalDateTime.now()));
-        order.setUpdateDate(Instant.from(LocalDateTime.now()));
-        Order savedOrder = orderRepository.save(order);
-        kafkaTemplate.send(TOPIC, "create-order", savedOrder);
-        return savedOrder;
+        // Set the current time as the creation timestamp
+        order.setCreationTimestamp(LocalDateTime.now());
+
+        // Set default status if necessary
+        if (order.getOrderStatus() == null) {
+            order.setOrderStatus("Created");
+        }
+
+        // Save order to repository
+        return orderRepository.save(order);
     }
 
     public Optional<Order> getOrderById(UUID orderId) {

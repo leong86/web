@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -24,6 +25,10 @@ public class Order {
     private BigDecimal totalPrice;
     private UUID paymentId;
     private String shippingAddress;
+//    private LocalDateTime creationTimestamp;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime creationTimestamp;
 
     // Constructors
     public Order() {
@@ -122,5 +127,13 @@ public class Order {
 
     public void setShippingAddress(String shippingAddress) {
         this.shippingAddress = shippingAddress;
+    }
+
+    public void setCreationTimestamp(LocalDateTime creationTimestamp) {
+        this.creationTimestamp = creationTimestamp;
+    }
+
+    public LocalDateTime getCreationTimestamp() {
+        return creationTimestamp;
     }
 }
