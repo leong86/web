@@ -33,14 +33,30 @@ public class ItemService {
         return itemRepository.findByName(name);
     }
 
-    public Item updateItem(Long id, Item item) {
-        if (!itemRepository.existsById(id)) {
-            return null;
+    public Item updateItem(Long id, Item itemDetails) {
+        Optional<Item> existingItemOptional = itemRepository.findById(id);
+        if (!existingItemOptional.isPresent()) {
+            return null; // Or you can throw a custom exception if item not found
         }
-        item.setId(id);
-        item.setUpdatedAt(LocalDateTime.now());
-        return itemRepository.save(item);
+        Item existingItem = existingItemOptional.get();
+
+        // Update fields, except createdAt
+        existingItem.setName(itemDetails.getName());
+        existingItem.setDescription(itemDetails.getDescription());
+        existingItem.setPrice(itemDetails.getPrice());
+        existingItem.setUnitPrice(itemDetails.getUnitPrice());
+        existingItem.setPictureUrls(itemDetails.getPictureUrls());
+        existingItem.setUpc(itemDetails.getUpc());
+
+        // updatedAt should be set to now
+        existingItem.setUpdatedAt(LocalDateTime.now());
+
+        // Do not update createdAt, keep the original
+        // existingItem.setCreatedAt(existingItem.getCreatedAt()); // This line is redundant
+
+        return itemRepository.save(existingItem);
     }
+
 
     public boolean deleteItem(Long id) {
         if (!itemRepository.existsById(id)) {
